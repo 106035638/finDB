@@ -1,0 +1,39 @@
+---
+title: "Import Data in R"
+author: "shyh-weir Tzang"
+date: "2019/3/6"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Import data in R
+#### read.table
+```{r }
+etf4<-read.table("ETF4_2000_2018_d.txt")
+head(etf4)
+```
+
+It's possible that you will get error message! This is because Chinese characters that cannot be recognized!
+But this works fine in Mac!!!
+But you can add: fileEncoding = 'UTF-8-BOM' to solve the problem!
+
+```{r}
+etf4<-read.table("ETF4_2000_2018_d.txt", fileEncoding = "UTF-8-BOM")
+head(etf4)
+```
+
+#### Using read.csv to import .csv file
+
+```{r}
+etf4.csv<-read.csv("ETF4_2000_2018_d.csv", fileEncoding='big5', 
+                   colClasses=c('factor', 'factor', 'factor', 'numeric', 'numeric'))
+head(etf4.csv)
+str(etf4.csv)
+```
+
+
+
+
