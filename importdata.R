@@ -24,12 +24,12 @@ head(etf4)
 etf4<-read.csv("ETF4_2000_2018_d.csv", colClasses = c("證券代碼"="character"))
 str(etf4)
 # If you get garbled text, you may try:
-etf4.csv<-read.csv("ETF4_2000_2018_d.csv", fileEncoding='big5', 
+,etf4.csv<-read.csv("ETF4_2000_2018_d.csv", fileEncoding='big5'
                    colClasses=c('factor', 'factor', 'factor', 'numeric', 'numeric'))
 head(etf4.csv)
 str(etf4.csv)
 # using read_csv to imoprt data to tibble format
-#install.packages("readr")
+install.packages("readr")
 library(readr)
 etf4_csv<-read_csv("ETF4_2000_2018_d.csv")
 # you will get garbled text!
@@ -37,7 +37,7 @@ etf4_csv<-read_csv("ETF4_2000_2018_d.csv", locale = locale(encoding='big5'))
 head(etf4_csv)
 str(etf4_csv)
 # read xls file
-#install.packages("readxl")
+install.packages("readxl")
 library(readxl)
 etf4_xls<-read_excel("ETF4_2000_2018_d.xls", 
                      col_types =c("text", "text","text", "numeric","numeric"))
@@ -49,14 +49,14 @@ etf4.c<-etf4.c[-1,]
 colnames(etf4.c)<-c("id", "date", "price")
 # use pipe operator 
 library(magrittr)
-#install.packages("dplyr")
+install.packages("dplyr")
 library(dplyr)
 etf4.c<-etf4_csv%>%select(c(1,3,5))%>%rename("id" = "證券代碼", "date"= "日期", "price" = "當日均價(元)")
 etf4.c
 #etf4.c<-etf4_csv%>%select("證券代碼", "日期", "當日均價(元)")
 #-----------------------------------------------------------------                
 # use dcast to reorder dataframe by date;
-#install.packages("reshape2")
+install.packages("reshape2")
 library(reshape2)
 etf4.reorder = dcast(etf4.c, date~id)
 dim(etf4.reorder)
@@ -68,7 +68,7 @@ head(etf4.reorder)
 str(etf4.reorder)
 # convert character into numeric 
 # convert to xts
-#install.packages("xts")
+install.packages("xts")
 library(xts)
 etf4.xts<-xts(etf4.reorder[,-1], order.by = etf4.reorder$date)
 head(etf4.xts)
@@ -90,7 +90,7 @@ head(etf4.xts.fill)
 etf4.xts<-na.omit(etf4.xts)
 head(etf4.xts)
 # or complete cases
-#install.packages("tidyr")
+install.packages("tidyr")
 library(tidyr)
 etf4.xts1<-etf4.xts[complete.cases(etf4.xts),]
 head(etf4.xts1)
@@ -135,7 +135,7 @@ first(lastweek, "-2 days")
 #------------------------------------------------------------
 # Converting Daily Prices to Monthly Returns in the xts world
 #------------------------------------------------------------
-#install.packages('quantmod')
+install.packages('quantmod')
 library(quantmod)
 etf4_monthly <- to.monthly(etf4.xts, indexAt = "lastof", OHLC=FALSE)
 head(etf4_monthly)
