@@ -1,0 +1,36 @@
+---
+title: "hw3"
+author: "106035638"
+date: "2019/3/24"
+output: html_document
+有些東西讀不出來
+---
+
+```{r}
+library(readr)
+tw50_2017<-read_csv("2017Q4_code.csv", locale = locale(encoding='big5'))
+head(tw50_2017)
+```
+#
+```{r}
+library(quantmod)
+tickers<-c("1101.TW","1102.TW","1216.TW","1301.TW","1303.TW","1326.TW","1402.TW","2002.TW","2105.TW","2633.TW","2801.TW","2823.TW","2880.TW","2881.TW","2882.TW","2883.TW","2884.TW","2885.TW","2886.TW","2887.TW","2890.TW","2891.TW","2892.TW","5876.TW","5880.TW","2912.TW","5871.TW","9904.TW","6505.TW","2303.TW","2330.TW","2408.TW","2454.TW","3711.TW","2301.TW","2357.TW","2382.TW","2395.TW","2409.TW","3008.TW","3481.TW","2412.TW","3045.TW","4904.TW","2308.TW","2327.TW","2317.TW","2354.TW","2474.TW")
+
+```
+#
+```{r}
+code50<-tw50_2017$code
+code50.tw <- paste(code50, ".TW", sep="")
+data=new.env()
+names(date)
+```
+#
+```{r}
+library(readr)
+tw50<-read_csv("tw50.csv", locale = locale(encoding='big5'))
+tw50<-na.omit(tw50)
+head(tw50)
+```
+
+
+
