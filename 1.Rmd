@@ -3,7 +3,6 @@ title: "hw3"
 author: "106035638"
 date: "2019/3/24"
 output: html_document
-有些東西讀不出來
 ---
 
 ```{r}
@@ -31,6 +30,5 @@ tw50<-read_csv("tw50.csv", locale = locale(encoding='big5'))
 tw50<-na.omit(tw50)
 head(tw50)
 ```
-
 
 
