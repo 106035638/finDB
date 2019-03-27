@@ -1,0 +1,127 @@
+---
+title: "hw4"
+author: '106035638'
+date: "2019年3月25日"
+output: html_document
+---
+
+```{r}
+library(readr)
+etf4_csv<-read_csv("ETF4_2000_2018_d.csv", locale = locale(encoding='big5'))
+head(etf4_csv)
+str(etf4_csv)
+tf4.c<-etf4_csv[, c(-2, -4)]
+etf4.c<-etf4.c[-1,]
+colnames(etf4.c)<-c("id", "date", "price")
+library(reshape2)
+etf4.reorder = dcast(etf4.c, date~id)
+etf4.reorder$date<-as.Date(as.character(etf4.reorder$date), "%Y%m%d")
+dim(etf4.reorder)
+head(etf4.reorder)
+str(etf4.reorder)
+library(xts)
+etf4.xts<-xts(etf4.reorder[,-1], order.by = etf4.reorder$date)
+head(etf4.xts)
+tail(etf4.xts)
+str(etf4.xts)
+library(quantmod)
+etf4_monthly <- to.monthly(etf4.xts, indexAt = "lastof", OHLC=FALSE)
+head(etf4_monthly)
+library(PerformanceAnalytics)
+library(magrittr)
+etf4_returns_xts <-Return.calculate(etf4_monthly, method = "log") %>%
+  na.omit()
+head(etf4_returns_xts)
+dim(etf4_returns_xts)
+```
+
+```{r}
+head(etf4_returns_xts)
+dim(etf4_returns_xts)
+plot(etf4_returns_xts, xaxt='n')
+axis(1, index(etf4_returns_xts), format(index(etf4_returns_xts), "%Y/%m"))
+```
+
+```{r}
+library(ggplot2)
+etf4_ret.df1<-fortify(etf4_returns_xts)
+head(etf4_ret.df1)
+plot(etf4_ret.df1$`0050`, etf4_ret.df1$`00646`, pch=20,
+     col = 'darkred', main = '0050 vs. 00646 monthly returns',
+     xlab = '0050', ylab = '00646 S&P500')
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+etf4_ret.df2 <- cbind(etf4_ret.df1, month=month(index(etf4_returns_xts)), 
+                      year=year(index(etf4_returns_xts)))
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, color = month))
+```
+
+```{r}
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, size = month))
+```
+
+```{r}
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, alpha = month))
+```
+
+```{r}
+etf4_ret<-coredata(etf4_monthly[-1,])/coredata(etf4_monthly[-dim(etf4_monthly)[1],])-1
+head(etf4_ret)
+class(etf4_ret)
+etf4_ret
+etf4_ret.tmp<-data.frame(date = index(etf4_returns_xts), etf4_ret)
+head(etf4_ret.tmp)
+library(plotly)
+pl = plot_ly(etf4_ret.tmp, x= ~date, y= ~X0050, name = "0050", type = "scatter", mode = "lines") %>%
+  add_trace(y=~X0056, name = '0056',mode = 'lines+markers')%>%
+  layout(xaxis = list(title = 'year'), yaxis = list(title = 'monthly returns'))
+pl
+```
+
+```{r}
+etf4_ret.df<-fortify(etf4_returns_xts, melt=TRUE)
+head(etf4_ret.df)
+p<-ggplot(etf4_ret.df, aes(x = Index, y = Value))+
+  geom_line(aes(color = Series), size = 1)
+
+p + scale_x_date(date_labels = "%Y/%m")
+```
+
+```{r}
+q<-etf4_ret.df %>%
+  ggplot(aes(x =Value, fill = Series)) +
+  geom_histogram(alpha = 0.45, binwidth = .005) +
+  ggtitle("Monthly Returns")
+q + facet_wrap(~Series)+ theme_update(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+etf4_ret.df %>%
+  ggplot(aes(x = Value, colour = Series)) +
+  geom_density(alpha = 1) +
+  ggtitle("Monthly Returns Density Since 2016") +
+  xlab("monthly returns") +
+  ylab("distribution") +
+  theme_update(plot.title = element_text(hjust = 0.5))
+```
+
+```{r}
+etf4_ret.df %>%
+  ggplot(aes(x = Value)) +
+  geom_density(aes(color = Series), alpha = 1) +
+  geom_histogram(aes(fill = Series), alpha = 0.45, binwidth = .01) +
+  guides(fill = FALSE) +
+  facet_wrap(~Series) +
+  ggtitle("Monthly Returns Since 2016") +
+  xlab("monthly returns") +
+  ylab("distribution") +
+  theme_update(plot.title = element_text(hjust = 0.5))
+```
+
