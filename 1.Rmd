@@ -3,7 +3,6 @@ title: "hw3"
 author: "106035638"
 date: "2019/3/24"
 output: html_document
-有些東西讀不出來
 ---
 
 ```{r}
@@ -32,5 +31,63 @@ tw50<-na.omit(tw50)
 head(tw50)
 ```
 
+#============================================================
+# Plot in R
+
+```{r}
+plot(etf4_returns_xts, xaxt='n')
+axis(1, index(etf4_returns_xts), format(index(etf4_returns_xts), "%Y/%m"))
+```
+# plot the scatterplot of 0050 and 00646
+# convert xts into df using fortify()
+```{r}
+etf4_ret.df1<-fortify(etf4_returns_xts)
+head(etf4_ret.df1)
+plot(etf4_ret.df1$`0050`, etf4_ret.df1$`00646`, pch=20,
+     col = 'darkred', main = '0050 vs. 00646 monthly returns',
+     xlab = '0050', ylab = '00646 S&P500')
+```
+
+#install.packages("tidyverse")
+library(tidyverse)
+library(ggplot2)
+```{r}
+library(lubridate)
+etf4_ret.df2 <- cbind(etf4_ret.df1, month=month(index(etf4_returns_xts)), 
+                      year=year(index(etf4_returns_xts)))
+```
+#
+```{r}
+library(ggplot2)
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, color = month))
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, size = month))
+ggplot(data = etf4_ret.df2) +
+  geom_point(mapping = aes(x = etf4_ret.df2$`0050`, y = etf4_ret.df2$`0056`, alpha = month))
+
+```
+#
+```{r}
+
+```
+#
+```{r}
+
+```
+#
+```{r}
+etf4_ret
+etf4_ret.tmp<-data.frame(date = index(etf4_returns_xts), etf4_ret)
+head(etf4_ret.tmp)
+```
+
+```{r}
+etf4_ret.tmp<-etf4_returns_xts %>% 
+  data.frame(date=index(.)) %>% 
+  remove_rownames() %>% 
+  gather(asset, return, -date) # turn data into long format
+head(etf4_ret.tmp)
+```
 
 

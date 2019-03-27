@@ -1,6 +1,6 @@
 ---
 title: "Import Data in R"
-author: "李思穎"
+author: "shyh-weir Tzang"
 date: "2019/3/6"
 output: html_document
 ---
@@ -11,130 +11,29 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Import data in R
 #### read.table
-開啟「ETF4_2000_2018_d.txt」檔案，header = 
-T表示第一列為變數的名稱及fileEncoding = 
-"UTF-8-BOM"解決亂碼問題。
 ```{r }
-rm(list=ls())
-etf4<-read.table("ETF4_2000_2018_d.txt", header = T , fileEncoding = "UTF-8-BOM")
+etf4<-read.table("ETF4_2000_2018_d.txt")
 head(etf4)
 ```
-設定stringsAsFactors = T，
-讓其以證券代碼id、date、price分類，且利用fileEncoding ='big5'使文字編碼為中文。
+
+It's possible that you will get error message! This is because Chinese characters that cannot be recognized!
+But this works fine in Mac!!!
+But you can add: fileEncoding = 'UTF-8-BOM' to solve the problem!
+
 ```{r}
-etf4<-read.csv("ETF4_2000_2018_d.csv", fileEncoding='big5',
-                   colClasses = c("證券代碼"="character", 'id', 'date', 'price'))
+etf4<-read.table("ETF4_2000_2018_d.txt", fileEncoding = "UTF-8-BOM")
 head(etf4)
 ```
-使用readr以提供完整的文字檔讀取功能，且locale =
-locale(encoding='big5'使文字編碼為中文。
+
 #### Using read.csv to import .csv file
-```{r}
-library(readr)
-etf4_csv<-read_csv("ETF4_2000_2018_d.csv", locale = locale(encoding='big5'))
-head(etf4_csv)
-```
-利用readxl讀取ecvel的檔案，並且使用col_types，讓欄位的類別以向量表示。
-```{r}
-library(readxl)
-etf4_xls<-read_excel("ETF4_2000_2018_d.xls", 
-                     col_types =c("text", "text","text", "numeric","numeric"))
-head(etf4_xls)
-```
-把第一、第二、第四欄刪除，並使用magrittr、dplyr，將檔案變成以id、date、price顯示。
-```{r}
-etf4.c<-etf4_csv[, c(-2, -4)]
-library(magrittr)
-library(dplyr)
-etf4.c<-etf4_csv%>%select(c(1,3,5))%>%rename("id" = "證券代碼", "date"= "日期", "price" = "當日均價(元)")
-colnames(etf4.c)<-c("id", "date", "price")
-head(etf4.c)
-```
-使用dcast讓資料變扁，以日期、id分組。
-```{r}
-library(reshape2)
-etf4.reorder = dcast(etf4.c, date~id)
-dim(etf4.reorder)
-head(etf4.reorder)
-str(etf4.reorder)
-```
-"%Y%m%d"以年~月~日顯示。
-```{r}
-etf4.reorder$date<-as.Date(as.character(etf4.reorder$date), "%Y%m%d") 
-head(etf4.reorder)
-str(etf4.reorder)
-head(etf4.reorder)
-```
-將文字轉成數字。
-```{r}
-library(xts)
-etf4.xts<-xts(etf4.reorder[,-1], order.by = etf4.reorder$date)
-head(etf4.xts)
-tail(etf4.xts)
-str(etf4.xts)
-```
-使用na.locf替代NA值。
-```{r}
-etf4.xts<-na.locf(etf4.xts)                
-tail(etf4.xts)
-```
-利用fromLast解決下一個錯誤。
-```{r}
-etf4.xts.fill<-na.locf(etf4.xts, fromLast = TRUE) 
-head(etf4.xts.fill)
-```
-使用na.omit除去NA值。
-```{r}
-etf4.xts<-na.omit(etf4.xts)
-head(etf4.xts)
-```
-利用tidyr使長寬表格轉換。
-```{r}
-library(tidyr)
-etf4.xts1<-etf4.xts[complete.cases(etf4.xts),]
-head(etf4.xts1)
-```
-只顯示0050的資料。
-```{r}
-lag_x <- lag(etf4.xts$`0050`, 1)
-head(lag_x)
-```
 
 ```{r}
-write.csv(etf4.xts, file = "myetf4.csv")
-```
-利用saveRDS將資料存檔為rds檔。
-```{r}
-write.zoo(etf4.xts, sep = ',', file = "myetf4.csv.1")
-saveRDS(etf4.xts, file = "etf4.xts.rds")
-etf4.xts2 <- readRDS("etf4.xts.rds")
-head(etf4.xts2)
-```
-zoo是以時間為基礎。
-```{r}
-etf4.zoo <- read.zoo("myetf4.csv.1", header = TRUE, index.column =1, 
-                     sep = ",", format = "%Y-%m-%d")
-head(etf4.zoo)
-class(etf4.zoo)
-etf4.xts3<-as.xts(etf4.zoo)
-head(etf4.xts3)
-```
-只顯示2016年1月到6月。
-```{r}
-etf4_2016<-etf4.xts['2016']
-etf4_2016_01_06 <- etf4.xts["20160101/20160630"]
-head(etf4_2016_01_06)
+etf4.csv<-read.csv("ETF4_2000_2018_d.csv", fileEncoding='big5', 
+                   colClasses=c('factor', 'factor', 'factor', 'numeric', 'numeric'))
+head(etf4.csv)
+str(etf4.csv)
 ```
 
-```{r}
-lastweek <- last(etf4_2016, "1 week")
-```
-顯示2016年最後2天。
-```{r}
-last(lastweek, 2)
-```
-顯示2016年倒數3天。
-```{r}
-first(lastweek, "-2 days")
-```
+
+
 
