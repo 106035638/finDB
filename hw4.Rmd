@@ -10,7 +10,7 @@ library(readr)
 etf4_csv<-read_csv("ETF4_2000_2018_d.csv", locale = locale(encoding='big5'))
 head(etf4_csv)
 str(etf4_csv)
-tf4.c<-etf4_csv[, c(-2, -4)]
+etf4.c<-etf4_csv[, c(-2, -4)]
 etf4.c<-etf4.c[-1,]
 colnames(etf4.c)<-c("id", "date", "price")
 library(reshape2)
