@@ -90,4 +90,3 @@ etf4_ret.tmp<-etf4_returns_xts %>%
 head(etf4_ret.tmp)
 ```
 
-
