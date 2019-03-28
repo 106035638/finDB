@@ -1,0 +1,396 @@
+---
+title: "hw5"
+author: '106035638'
+date: "2019年3月28日"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+head(diamonds)
+```
+
+```{r}
+set.seed(5)
+diamonds.subset <- diamonds[sample(nrow(diamonds), 100), ]
+```
+
+```{r}
+qplot(diamonds$carat, diamonds$price)
+```
+
+```{r}
+qplot(carat, price, data = diamonds)
+```
+
+```{r}
+qplot(log(carat), log(price), data = diamonds)
+```
+
+```{r}
+qplot(carat, x * y * z, data = diamonds)
+```
+
+```{r}
+qplot(carat, price, data = diamonds.subset, color = color)
+```
+
+```{r}
+qplot(carat, price, data = diamonds.subset, shape = cut)
+```
+
+```{r}
+qplot(carat, price, data = diamonds, alpha = I(1/10))
+```
+
+```{r}
+qplot(carat, price, data = diamonds, alpha = I(1/100))
+```
+
+```{r}
+qplot(carat, price, data = diamonds.subset,
+      geom = c("point", "smooth"))
+```
+
+```{r}
+qplot(carat, price, data = diamonds,
+      geom = c("point", "smooth"))
+```
+
+```{r}
+qplot(color, price / carat, data = diamonds, geom = "boxplot")
+```
+
+```{r}
+qplot(color, price / carat, data = diamonds, geom = "jitter")
+```
+
+```{r}
+qplot(color, price / carat, data = diamonds,
+      geom = "jitter", alpha = I(1 / 5))
+```
+
+```{r}
+qplot(color, price / carat, data = diamonds, geom = "jitter",
+      alpha = I(1 / 50))
+```
+
+```{r}
+qplot(color, price / carat, data = diamonds, geom = "jitter",
+      alpha = I(1 / 200))
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "histogram")
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "histogram",
+      binwidth = 0.5, xlim = c(0, 3))
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "histogram",
+      binwidth = 0.01, xlim = c(0, 3))
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "histogram",
+      fill = color)
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "density")
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "density", adjust = 3)
+```
+
+```{r}
+qplot(carat, data = diamonds, geom = "density",
+      color = color)
+```
+
+```{r}
+qplot(carat, ..density.., data = diamonds,
+      geom = c("histogram", "density"))
+```
+
+```{r}
+qplot(color, data = diamonds, geom = "bar")
+```
+
+```{r}
+qplot(color, data = diamonds, geom = "bar", weight = carat) +
+  ylab("carat")
+```
+
+```{r}
+qplot(date, unemploy / pop, data = economics, geom = "line")
+```
+
+```{r}
+qplot(date, uempmed, data = economics, geom = "line")
+```
+
+```{r}
+qplot(unemploy / pop, uempmed, data = economics,
+      geom = c("point", "path"))
+```
+
+```{r}
+year <- function(x) as.POSIXlt(x)$year + 1900
+qplot(unemploy / pop, uempmed, data = economics,
+      geom = "path", colour = year(date))
+```
+
+```{r}
+qplot(carat, data = diamonds, facets = color ~ cut,
+      geom = "histogram", binwidth = 0.1, xlim = c(0, 3))
+```
+
+```{r}
+qplot(carat, data = diamonds, facets = color ~ .,
+      geom = "histogram", binwidth = 0.1, xlim = c(0, 3))
+```
+
+```{r}
+qplot(
+  carat, price, data = diamonds.subset,
+  xlab = "Price ($)", ylab = "Weight (carats)",
+  main = "Price-weight relationship"
+)
+```
+
+```{r}
+qplot(
+  carat, price/carat, data = diamonds.subset,
+  ylab = expression(frac(price,carat)),
+  xlab = "Weight (carats)",
+  main="Small diamonds",
+  xlim = c(.2,1)
+)
+```
+
+```{r}
+qplot(carat, price, data = diamonds.subset, log = "xy")
+```
+
+```{r}
+mtcars$gear <- factor(mtcars$gear,levels=c(3, 4, 5),
+                      labels=c("3gears", "4gears", "5gears"))
+mtcars$am <- factor(mtcars$am,levels=c(0, 1),
+                    labels=c("Automatic", "Manual"))
+mtcars$cyl <- factor(mtcars$cyl,levels=c(4, 6, 8),
+                     labels=c("4cyl", "6cyl", "8cyl"))
+```
+
+
+
+
+
+
+
+```{r}
+my.plot <- ggplot(diamonds, aes(carat, price, colour = cut))
+```
+
+```{r}
+my.plot <- my.plot + layer(
+geom = "point",
+stat = "identity",
+position = "identity",
+params = list(na.rm = FALSE)
+)
+```
+
+```{r}
+my.plot
+```
+
+```{r}
+my.plot2 <- ggplot(diamonds, aes(x = carat))
+my.plot2 <- my.plot2 + layer(
+  geom = "bar",
+  stat = "bin",
+  position = "identity",
+  params = list(
+    fill = "steelblue",
+    binwidth = 0.2,
+    na.rm = FALSE
+  )
+)
+my.plot2
+```
+
+```{r}
+my.plot3 <- ggplot(diamonds, aes(x = carat))
+my.plot3 <- my.plot3 +
+  geom_histogram(binwidth = 0.2, fill = "steelblue")
+my.plot3
+```
+
+```{r}
+ggplot(msleep, aes(sleep_rem / sleep_total, awake)) +
+  geom_point()
+```
+
+```{r}
+qplot(sleep_rem / sleep_total, awake, data = msleep)
+```
+
+```{r}
+qplot(sleep_rem / sleep_total, awake, data = msleep) +
+  geom_smooth()
+```
+
+```{r}
+qplot(sleep_rem / sleep_total, awake, data = msleep,
+      geom = c("point", "smooth"))
+```
+
+```{r}
+ggplot(msleep, aes(sleep_rem / sleep_total, awake)) +
+  geom_point() + geom_smooth()
+```
+
+```{r}
+my.plot4 <- ggplot(msleep, aes(sleep_rem / sleep_total, awake))
+summary(my.plot4)
+```
+
+```{r}
+my.plot4 <- my.plot4 + geom_point()
+summary(my.plot4)
+```
+
+```{r}
+bestfit <- geom_smooth(method = "lm", se = F,
+                       color = alpha("steelblue", 0.5), size = 2)
+qplot(sleep_rem, sleep_total, data = msleep) + bestfit
+qplot(awake, brainwt, data = msleep, log = "y") + bestfit
+qplot(bodywt, brainwt, data = msleep, log = "xy") + bestfit
+```
+
+```{r}
+my.plot5 <- ggplot(mtcars, aes(mpg, wt, colour = cyl)) + geom_point()
+```
+
+```{r}
+mtcars.trans <- transform(mtcars, mpg = mpg ^ 2)
+```
+
+```{r}
+aes(x = weight, y = height, color = age)
+```
+
+```{r}
+aes(weight, height, colour = sqrt(age))
+```
+
+```{r}
+my.plot6 <- ggplot(mtcars, aes(x = mpg, y = wt))
+my.plot6 <- my.plot6 + geom_point()
+summary(my.plot6)
+```
+
+```{r}
+my.plot7 <- ggplot(mtcars)
+my.plot7 <- my.plot7 + aes(x = mpg, y = wt)
+my.plot7 <- my.plot7 + geom_point()
+summary(my.plot7)
+```
+
+
+
+```{r}
+aes(y = NULL)
+```
+
+```{r}
+my.plot8 <- ggplot(mtcars, aes(mpg, wt))
+my.plot8 + geom_point(colour = "blue")
+```
+
+```{r}
+my.plot8 + geom_point(aes(colour = "blue"))
+```
+
+```{r}
+my.df <- data.frame(x = 1:3, y = 1:3, z = 1:3)
+qplot(x, y, data = my.df, color = factor(z), size = I(5)) +
+  geom_line(size = 3, group = 1)
+```
+
+```{r}
+qplot(color, data = diamonds, geom = "bar",
+      fill = cut)
+```
+
+```{r}
+ggplot(diamonds, aes(carat)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.1)
+```
+
+```{r}
+qplot(carat, ..density.., data = diamonds,
+      geom="histogram", binwidth = 0.1)
+```
+
+```{r}
+ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar(position="dodge")
+```
+
+```{r}
+ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar(position="fill")
+```
+
+```{r}
+ggplot(diamonds, aes(clarity, fill=cut)) + geom_bar(position="stack")
+```
+
+```{r}
+ggplot(diamonds, aes(clarity, group = cut)) +
+  geom_line(aes(color = cut), position="identity", stat = "count")
+```
+
+```{r}
+set.seed(5)
+diamonds.subset <- diamonds[sample(nrow(diamonds), 500), ]
+ggplot(diamonds.subset, aes(clarity, cut)) +
+  geom_point(aes(color = color), position="jitter")
+```
+
+```{r}
+my.plot <- ggplot(diamonds, aes(carat)) + xlim(0, 3)
+my.plot + stat_bin(aes(ymax = ..count..), binwidth = 0.1, geom = "area")
+```
+
+```{r}
+my.plot + stat_bin(
+  aes(size = ..density..), binwidth = 0.1,
+  geom = "point", position="identity"
+)
+```
+
+```{r}
+library(nlme)
+model <- lme(height ~ age, data = Oxboys, random = ~ 1 + age | Subject)
+age_grid <- seq(-1, 1, length = 10)
+subjects <- unique(Oxboys$Subject)
+preds <- expand.grid(age = age_grid, Subject = subjects)
+preds$height <- predict(model, preds)
+```
+
+```{r}
+my.plot <- ggplot(Oxboys, aes(age, height, group = Subject)) + geom_line()
+my.plot + geom_line(data = preds, colour = "#3366FF", size= 0.4)
+```
+
+```{r}
+Oxboys$fitted <- predict(model)
+Oxboys$resid <- with(Oxboys, fitted - height)
+my.plot %+% Oxboys + aes(y = resid) + geom_smooth(aes(group=1))
+```
+
